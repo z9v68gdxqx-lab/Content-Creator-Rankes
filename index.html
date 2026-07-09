@@ -3,367 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Dashboard - Admin User-Verwaltung</title>
+    <title>Creator Dashboard</title>
     <style>
         :root {
-            --bg-color: #0f1115;
-            --panel-bg: #161920;
-            --text-color: #ffffff;
-            --text-secondary: #94a3b8;
-            --border-color: #1e293b;
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --tier-1: #ef4444; 
-            --tier-2: #3b82f6; 
-            --tier-3: #eab308; 
+            --bg: #0a0c10;
+            --panel: #12151c;
+            --card: #1a1f2e;
+            --accent: #00d4ff;
+            --text: #e0e7ff;
+            --text2: #a5b4fc;
+            --success: #22c55e;
+            --danger: #ef4444;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: linear-gradient(135deg, var(--bg), #0f1117);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
             min-height: 100vh;
-            justify-content: center;
+            padding: 40px 20px;
         }
 
         .container {
-            width: 100%;
-            max-width: 1200px;
+            max-width: 1280px;
+            margin: 0 auto;
             display: none;
         }
 
         .auth-card {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 16px;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 40px;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
         }
 
-        .auth-card h2 {
-            font-size: 1.6rem;
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(to right, #60a5fa, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
             margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .auth-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .auth-toggle {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .auth-toggle span {
-            color: var(--primary-color);
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            color: var(--text-secondary);
         }
 
         .user-bar {
+            background: var(--panel);
+            padding: 16px 24px;
+            border-radius: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #1e293b;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
-
-        .btn-logout {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
             margin-bottom: 30px;
-        }
-
-        .admin-only {
-            display: none;
+            border: 1px solid #334155;
         }
 
         .panel {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 12px;
-        }
-
-        .panel h2 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: #fff;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
+            background: var(--panel);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            align-items: flex-end;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 12px;
+        input, select {
+            background: #0f1117;
+            border: 1px solid #475569;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
         }
 
-        .form-group label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-
-        .form-group input, .form-group select {
-            background-color: #0f1115;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.95rem;
+        input:focus, select:focus {
             outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
         }
 
         .btn-action {
-            background-color: var(--primary-color);
-            color: #fff;
+            background: linear-gradient(90deg, var(--accent), #3b82f6);
+            color: white;
             border: none;
-            padding: 11px;
-            border-radius: 6px;
-            font-weight: bold;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .user-list {
-            list-style: none;
-            max-height: 220px;
-            overflow-y: auto;
-            padding-right: 5px;
+        .btn-action:hover {
+            transform: translateY(-2px);
         }
 
         .user-item {
-            background-color: #0f1115;
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
-        .filter-panel {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-btn {
-            background-color: #1e293b;
-            color: #fff;
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .filter-btn.active {
-            background-color: var(--primary-color);
-        }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
+            background: #0f1117;
+            padding: 14px 18px;
             border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #334155;
+            transition: all 0.2s;
         }
+
+        .user-item:hover {
+            transform: translateX(6px);
+            background: #1e2937;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-admin { background: #eab30833; color: #fbbf24; }
+        .badge-banned { background: #ef444433; color: #f87171; }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--border-color);
         }
 
         th {
-            background-color: #1e293b;
-            color: var(--text-secondary);
+            background: #1e2937;
+            padding: 16px;
+            text-align: left;
             font-size: 0.85rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #334155;
         }
 
-        .badge-tier-1 { background-color: rgba(239, 68, 68, 0.15); color: var(--tier-1); }
-        .badge-tier-2 { background-color: rgba(59, 130, 246, 0.15); color: var(--tier-2); }
-        .badge-tier-3 { background-color: rgba(234, 179, 8, 0.15); color: var(--tier-3); }
-        .badge-admin-user { background-color: rgba(234, 179, 8, 0.2); color: var(--tier-3); }
-        .badge-normal-user { background-color: rgba(148, 163, 184, 0.15); color: var(--text-secondary); }
-        .badge-banned { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-
-        .rank-actions, .user-actions {
-            display: flex;
-            gap: 5px;
+        .rank-actions button {
+            padding: 8px 14px;
+            margin-right: 6px;
+            border-radius: 8px;
+            font-size: 0.85rem;
         }
 
-        .btn-rank, .btn-user-action {
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.8rem;
+        .filter-panel button {
+            padding: 10px 20px;
+            border-radius: 9999px;
+            background: #1e2937;
+            border: 1px solid #475569;
+            color: white;
+            transition: all 0.2s;
         }
 
-        .btn-up { background-color: #22c55e; color: white; }
-        .btn-down { background-color: #a855f7; color: white; }
-        .btn-del, .btn-ban { background-color: #ef4444; color: white; }
-
-        .empty-message { text-align: center; color: var(--text-secondary); padding: 30px; font-style: italic; }
+        .filter-panel button.active,
+        .filter-panel button:hover {
+            background: var(--accent);
+            color: black;
+            border-color: var(--accent);
+        }
 
         .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            text-align: center;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 14px 28px;
+            border-radius: 12px;
+            z-index: 1000;
+            font-weight: 500;
         }
-        .success { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-        .error { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
     </style>
 </head>
 <body>
 
-    <!-- AUTH -->
+    <!-- Login -->
     <div class="auth-card" id="authCard">
-        <h2 id="authTitle">Anmelden</h2>
-        <p id="authDesc">Logge dich mit deiner echten E-Mail ein.</p>
+        <h1>Creator Hub</h1>
+        <p style="text-align:center; color:var(--text2); margin:20px 0;">Admin Dashboard</p>
         
         <form id="authForm" onsubmit="handleAuth(event)">
-            <div class="form-group">
-                <label for="authEmail">E-Mail Adresse</label>
-                <input type="email" id="authEmail" required placeholder="deine@email.de">
-            </div>
-            <div class="form-group">
-                <label for="authPassword">Passwort</label>
-                <input type="password" id="authPassword" required placeholder="••••••••" minlength="6">
-            </div>
-            <button type="submit" class="btn-action" style="width:100%; margin-top:10px;">Einloggen</button>
+            <input type="email" id="authEmail" placeholder="E-Mail Adresse" required>
+            <input type="password" id="authPassword" placeholder="Passwort" required style="margin-top:12px;">
+            <button type="submit" class="btn-action" style="width:100%; margin-top:20px; font-size:1.1rem;">Einloggen</button>
         </form>
 
-        <div class="auth-toggle" id="authToggleText">
-            Noch keinen Account? <span onclick="switchAuthMode(true)">Jetzt registrieren</span>
-        </div>
+        <p style="text-align:center; margin-top:20px; color:var(--text2);">
+            Noch kein Account? <span onclick="switchAuthMode(true)" style="color:var(--accent); cursor:pointer;">Registrieren</span>
+        </p>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- Dashboard -->
     <div class="container" id="mainDashboard">
-        <header>
-            <h1>Creator & Admin Netzwerk</h1>
-            <p>Übersicht aller verifizierten Content Creator</p>
-        </header>
-
         <div class="user-bar">
-            <div>Eingeloggt als: <strong id="currentUserText"></strong> <span id="adminBadge" class="badge badge-admin-user" style="display:none;">ADMIN</span></div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <strong id="currentUserText" style="font-size:1.1rem;"></strong>
+                <span id="adminBadge" class="badge badge-admin" style="display:none;">ADMIN</span>
+            </div>
             <button class="btn-logout" onclick="logout()">Abmelden</button>
         </div>
 
-        <div class="admin-grid admin-only">
-            <div class="panel">
-                <h2>Neuen Creator hinzufügen</h2>
-                <form id="creatorForm" onsubmit="addCreator(event)">
-                    <div class="form-grid">
-                        <div class="form-group"><label>Name</label><input type="text" id="name" required></div>
-                        <div class="form-group"><label>Stufe</label>
-                            <select id="tier" required>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>TikTok</label><input type="text" id="tiktok" required></div>
-                        <div class="form-group"><label>Roblox</label><input type="text" id="roblox" required></div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label>Link</label><input type="url" id="link" required>
-                        </div>
-                        <button type="submit" class="btn-action" style="grid-column: span 2;">Hinzufügen</button>
-                    </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(380px,1fr)); gap:24px; margin-bottom:30px;">
+            <!-- Creator hinzufügen -->
+            <div class="panel admin-only">
+                <h2 style="margin-bottom:20px; color:var(--accent);">Neuen Creator hinzufügen</h2>
+                <form id="creatorForm" onsubmit="addCreator(event)" class="form-grid">
+                    <input type="text" id="name" placeholder="Name" required>
+                    <select id="tier" required>
+                        <option value="1">Stufe 1</option>
+                        <option value="2">Stufe 2</option>
+                        <option value="3">Stufe 3</option>
+                    </select>
+                    <input type="text" id="tiktok" placeholder="TikTok @name" required>
+                    <input type="text" id="roblox" placeholder="Roblox Name" required>
+                    <input type="url" id="link" placeholder="https://..." required style="grid-column: span 2;">
+                    <button type="submit" class="btn-action" style="grid-column: span 2; padding:16px;">Creator hinzufügen</button>
                 </form>
             </div>
 
-            <div class="panel">
-                <h2>Registrierte Accounts</h2>
-                <ul class="user-list" id="registeredUserList"></ul>
+            <!-- Registrierte User -->
+            <div class="panel admin-only">
+                <h2 style="margin-bottom:20px; color:var(--accent);">Registrierte Accounts</h2>
+                <ul id="registeredUserList" style="list-style:none; padding:0;"></ul>
             </div>
         </div>
 
-        <div class="filter-panel">
-            <button class="filter-btn active" onclick="setFilter('all')">Alle</button>
-            <button class="filter-btn" onclick="setFilter('sort')">Sortiert</button>
+        <!-- Filter -->
+        <div class="filter-panel" style="margin-bottom:20px;">
+            <button class="filter-btn active" onclick="setFilter('all')">Alle Creator</button>
+            <button class="filter-btn" onclick="setFilter('sort')">Nach Stufe</button>
             <button class="filter-btn" onclick="setFilter('1')">Stufe 1</button>
             <button class="filter-btn" onclick="setFilter('2')">Stufe 2</button>
             <button class="filter-btn" onclick="setFilter('3')">Stufe 3</button>
         </div>
 
-        <div class="table-responsive">
+        <!-- Tabelle -->
+        <div class="panel">
             <table>
                 <thead>
                     <tr>
@@ -381,6 +273,7 @@
     </div>
 
     <script>
+        // === Alle Funktionen (komplett) ===
         let creators = JSON.parse(localStorage.getItem('creators')) || [];
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let loggedInUser = JSON.parse(sessionStorage.getItem('user')) || null;
@@ -398,10 +291,10 @@
             const pw = document.getElementById('authPassword').value;
 
             if (document.getElementById('authTitle').innerText === "Registrieren") {
-                if (users.some(u => u.email === email)) return alert("E-Mail bereits vorhanden");
+                if (users.some(u => u.email === email)) return alert("Diese E-Mail existiert bereits!");
                 users.push({email, password: pw, isAdmin: isAdmin(email), banned: false});
                 localStorage.setItem('users', JSON.stringify(users));
-                alert("Registriert!");
+                alert("✅ Registrierung erfolgreich!");
                 switchAuthMode(false);
             } else {
                 const user = users.find(u => u.email === email && u.password === pw && !u.banned);
@@ -409,7 +302,9 @@
                     loggedInUser = user;
                     sessionStorage.setItem('user', JSON.stringify(user));
                     checkScreenState();
-                } else alert("Fehler!");
+                } else {
+                    alert("❌ Falsche Zugangsdaten oder Account gesperrt.");
+                }
             }
         }
 
@@ -429,7 +324,10 @@
                 document.getElementById('mainDashboard').style.display = "block";
                 document.getElementById('currentUserText').innerText = loggedInUser.email;
                 document.getElementById('adminBadge').style.display = isAdmin(loggedInUser.email) ? "inline" : "none";
-                if (isAdmin(loggedInUser.email)) document.querySelectorAll('.admin-only').forEach(el => el.style.display = "block");
+                
+                if (isAdmin(loggedInUser.email)) {
+                    document.querySelectorAll('.admin-only').forEach(el => el.style.display = "block");
+                }
                 renderUserList();
                 renderTable();
             } else {
@@ -442,27 +340,31 @@
             const list = document.getElementById('registeredUserList');
             list.innerHTML = '';
             users.forEach((user, i) => {
-                const li = document.createElement('li');
-                li.className = 'user-item';
                 const canBan = isAdmin(loggedInUser.email) && !isAdmin(user.email);
-                li.innerHTML = `
-                    ${user.email}
-                    ${user.banned ? '<span class="badge badge-banned">GEBANNT</span>' : isAdmin(user.email) ? '<span class="badge badge-admin">ADMIN</span>' : ''}
-                    ${canBan ? `<button onclick="toggleBan(${i})" class="btn-ban">${user.banned ? 'Entbannen' : 'Bannen'}</button>` : ''}
+                const item = document.createElement('li');
+                item.className = 'user-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>${user.email}</strong>
+                        ${user.banned ? '<span class="badge badge-banned">GEBANNT</span>' : isAdmin(user.email) ? '<span class="badge badge-admin">ADMIN</span>' : ''}
+                    </div>
+                    ${canBan ? `<button onclick="toggleBan(${i})" class="btn-user-action btn-ban">${user.banned ? 'Entbannen' : 'Bannen'}</button>` : ''}
                 `;
-                list.appendChild(li);
+                list.appendChild(item);
             });
         }
 
         function toggleBan(i) {
-            users[i].banned = !users[i].banned;
-            localStorage.setItem('users', JSON.stringify(users));
-            renderUserList();
+            if (confirm(users[i].banned ? "Entbannen?" : "Bannen?")) {
+                users[i].banned = !users[i].banned;
+                localStorage.setItem('users', JSON.stringify(users));
+                renderUserList();
+            }
         }
 
         function setFilter(f) {
             currentFilter = f;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.filter-panel button').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
             renderTable();
         }
@@ -471,11 +373,11 @@
             e.preventDefault();
             if (!isAdmin(loggedInUser.email)) return;
             creators.push({
-                name: document.getElementById('name').value,
+                name: document.getElementById('name').value.trim(),
                 tier: document.getElementById('tier').value,
-                tiktok: document.getElementById('tiktok').value,
-                roblox: document.getElementById('roblox').value,
-                link: document.getElementById('link').value
+                tiktok: document.getElementById('tiktok').value.trim(),
+                roblox: document.getElementById('roblox').value.trim(),
+                link: document.getElementById('link').value.trim()
             });
             localStorage.setItem('creators', JSON.stringify(creators));
             renderTable();
@@ -492,7 +394,7 @@
         }
 
         function deleteCreator(i) {
-            if (confirm("Löschen?")) {
+            if (confirm("Wirklich löschen?")) {
                 creators.splice(i, 1);
                 localStorage.setItem('creators', JSON.stringify(creators));
                 renderTable();
@@ -501,20 +403,31 @@
 
         function renderTable() {
             const tbody = document.getElementById('creatorTableBody');
-            tbody.innerHTML = creators.map((c, i) => `
-                <tr>
-                    <td>${c.name}</td>
+            tbody.innerHTML = '';
+
+            let list = [...creators];
+            if (currentFilter === 'sort') list.sort((a,b) => a.tier - b.tier);
+            else if (['1','2','3'].includes(currentFilter)) list = list.filter(c => c.tier === currentFilter);
+
+            list.forEach((c, idx) => {
+                const realIdx = creators.indexOf(c);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${c.name}</strong></td>
                     <td><span class="badge badge-tier-${c.tier}">Stufe ${c.tier}</span></td>
                     <td>${c.tiktok}</td>
                     <td>${c.roblox}</td>
-                    <td><a href="${c.link}" target="_blank">Link</a></td>
+                    <td><a href="${c.link}" target="_blank" style="color:var(--accent)">Öffnen →</a></td>
                     <td class="admin-only">
-                        <button onclick="changeRank(${i}, 'up')" class="btn-rank btn-up">▲</button>
-                        <button onclick="changeRank(${i}, 'down')" class="btn-rank btn-down">▼</button>
-                        <button onclick="deleteCreator(${i})" class="btn-rank btn-del">Löschen</button>
+                        <div class="rank-actions">
+                            <button onclick="changeRank(${realIdx}, 'up')" class="btn-rank btn-up">▲ Hoch</button>
+                            <button onclick="changeRank(${realIdx}, 'down')" class="btn-rank btn-down">▼ Runter</button>
+                            <button onclick="deleteCreator(${realIdx})" class="btn-rank btn-del">Löschen</button>
+                        </div>
                     </td>
-                </tr>
-            `).join('');
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         checkScreenState();
