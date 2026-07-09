@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Dashboard</title>
+    <title>Creator Dashboard - Admin User-Verwaltung</title>
     <style>
         :root {
             --bg: #0a0c10;
@@ -23,19 +23,26 @@
             padding: 20px 10px;
         }
 
-        .auth-card, .panel {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 30px 20px;
+        .container { max-width: 1280px; margin: 0 auto; display: none; }
+
+        .panel {
+            background: var(--panel);
+            border-radius: 16px;
+            padding: 24px;
             border: 1px solid #334155;
+            margin-bottom: 24px;
         }
 
-        h1 {
-            font-size: 2.4rem;
-            text-align: center;
-            background: linear-gradient(to right, #60a5fa, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h2 { color: var(--accent); margin-bottom: 20px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
         }
 
         input, select {
@@ -45,7 +52,6 @@
             padding: 14px;
             border-radius: 12px;
             width: 100%;
-            margin: 8px 0;
         }
 
         .btn-action {
@@ -57,48 +63,73 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
         }
 
-        .user-bar {
-            background: var(--panel);
+        .user-item {
+            background: #0f1117;
             padding: 14px 18px;
-            border-radius: 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            border: 1px solid #334155;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-admin { background: #eab30833; color: #fbbf24; }
+        .badge-creator { background: #22c55e33; color: #4ade80; }
+        .badge-user { background: #64748b33; color: #94a3b8; }
+        .badge-banned { background: #ef444433; color: #f87171; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #1e2937; }
+
+        .action-btn {
+            padding: 6px 12px;
+            margin: 3px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-up { background: #22c55e; color: white; }
+        .btn-down { background: #a855f7; color: white; }
+        .btn-del { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
 
-    <!-- Login / Register -->
-    <div class="auth-card" id="authCard">
-        <h1>Creator Hub</h1>
-        <p style="text-align:center; margin:20px 0; color:#a5b4fc;" id="authDesc">Logge dich ein oder registriere dich</p>
-        
+    <!-- Login -->
+    <div class="panel" id="authCard" style="max-width:420px;margin:0 auto;">
+        <h1 style="text-align:center;">Creator Hub</h1>
         <form id="authForm" onsubmit="handleAuth(event)">
-            <input type="email" id="authEmail" placeholder="E-Mail Adresse" required>
-            <input type="password" id="authPassword" placeholder="Passwort" required>
-            <button type="submit" class="btn-action" id="authBtn">Einloggen</button>
+            <input type="email" id="authEmail" placeholder="E-Mail" required>
+            <input type="password" id="authPassword" placeholder="Passwort" required style="margin-top:12px;">
+            <button type="submit" class="btn-action" style="margin-top:20px;">Einloggen</button>
         </form>
-
-        <p style="text-align:center; margin-top:20px;">
-            <span onclick="switchAuthMode()" id="toggleText" style="color:var(--accent); cursor:pointer;">Noch kein Account? Jetzt registrieren</span>
-        </p>
     </div>
 
     <!-- Dashboard -->
     <div class="container" id="mainDashboard">
-        <div class="user-bar">
-            <div><strong id="currentUserText"></strong> <span id="adminBadge" style="background:#eab30833;color:#fbbf24;padding:4px 12px;border-radius:9999px;font-size:0.8rem;display:none;">ADMIN</span></div>
+        <div class="panel" style="display:flex;justify-content:space-between;align-items:center;">
+            <div><strong id="currentUserText"></strong> <span id="adminBadge" style="background:#eab30833;color:#fbbf24;padding:4px 12px;border-radius:9999px;font-size:0.85rem;display:none;">ADMIN</span></div>
             <button onclick="logout()" style="background:#ef4444;color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;">Abmelden</button>
         </div>
 
         <div class="panel admin-only">
-            <h2 style="margin-bottom:20px;color:var(--accent);">Neuen Creator hinzufügen</h2>
-            <form id="creatorForm" onsubmit="addCreator(event)" style="display:grid;grid-template-columns:1fr;gap:12px;">
+            <h2>Neuen Creator hinzufügen</h2>
+            <form id="creatorForm" onsubmit="addCreator(event)" class="form-grid">
                 <input type="text" id="name" placeholder="Name" required>
                 <select id="tier" required>
                     <option value="1">Stufe 1</option>
@@ -113,12 +144,12 @@
         </div>
 
         <div class="panel admin-only">
-            <h2 style="margin-bottom:20px;color:var(--accent);">Registrierte Accounts</h2>
+            <h2>Registrierte Accounts</h2>
             <ul id="registeredUserList" style="list-style:none;padding:0;"></ul>
         </div>
 
         <div class="panel">
-            <table style="width:100%;border-collapse:collapse;">
+            <table>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -138,18 +169,16 @@
         let creators = JSON.parse(localStorage.getItem('creators')) || [];
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let loggedInUser = JSON.parse(sessionStorage.getItem('user')) || null;
-        let isRegisterMode = false;
+        let currentFilter = 'sort';
 
-        const ADMINS = ["jonasterpitz@gmail.com", "emdenflopi.kooperation@gmx.de", "j.terpitz@icloud.com"];
+        const ADMINS = [
+            "jonasterpitz@gmail.com",
+            "emdenflopi.kooperation@gmx.de",
+            "j.terpitz@icloud.com"
+        ];
 
         function isAdmin(email) {
             return ADMINS.includes((email || "").toLowerCase().trim());
-        }
-
-        function switchAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authBtn').innerText = isRegisterMode ? "Registrieren" : "Einloggen";
-            document.getElementById('toggleText').innerText = isRegisterMode ? "Bereits registriert? Einloggen" : "Noch kein Account? Jetzt registrieren";
         }
 
         function handleAuth(e) {
@@ -157,23 +186,25 @@
             const email = document.getElementById('authEmail').value.trim().toLowerCase();
             const pw = document.getElementById('authPassword').value;
 
-            if (isRegisterMode) {
-                if (users.some(u => u.email === email)) return alert("Diese E-Mail ist bereits registriert!");
-                const newUser = {email, password: pw, isAdmin: isAdmin(email), banned: false};
-                users.push(newUser);
+            let user = users.find(u => u.email === email);
+            if (!user) {
+                user = { 
+                    email, 
+                    password: pw, 
+                    isAdmin: isAdmin(email), 
+                    role: isAdmin(email) ? "Admin" : "User",
+                    banned: false 
+                };
+                users.push(user);
                 localStorage.setItem('users', JSON.stringify(users));
-                alert("Registrierung erfolgreich! Du kannst dich jetzt einloggen.");
-                isRegisterMode = false;
-                switchAuthMode();
+            }
+
+            if (user.password === pw && !user.banned) {
+                loggedInUser = user;
+                sessionStorage.setItem('user', JSON.stringify(user));
+                checkScreenState();
             } else {
-                const user = users.find(u => u.email === email && u.password === pw && !u.banned);
-                if (user) {
-                    loggedInUser = user;
-                    sessionStorage.setItem('user', JSON.stringify(user));
-                    checkScreenState();
-                } else {
-                    alert("Falsche E-Mail oder Passwort!");
-                }
+                alert("Falsches Passwort oder Account gesperrt!");
             }
         }
 
@@ -207,14 +238,33 @@
             users.forEach((user, i) => {
                 const canModify = isAdmin(loggedInUser.email) && !isAdmin(user.email);
                 const item = document.createElement('li');
-                item.style = "background:#0f1117;padding:14px;border-radius:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;";
+                item.className = 'user-item';
                 item.innerHTML = `
-                    <div><strong>${user.email}</strong></div>
-                    ${user.banned ? '<span style="background:#ef444433;color:#f87171;padding:4px 10px;border-radius:9999px;">GEBANNT</span>' : isAdmin(user.email) ? '<span style="background:#eab30833;color:#fbbf24;padding:4px 10px;border-radius:9999px;">ADMIN</span>' : ''}
-                    ${canModify ? `<button onclick="toggleBan(${i})" style="background:#ef4444;color:white;border:none;padding:6px 12px;border-radius:8px;">${user.banned ? 'Entbannen' : 'Bannen'}</button>` : ''}
+                    <div>
+                        <strong>${user.email}</strong><br>
+                        <span class="badge ${user.role === 'Admin' ? 'badge-admin' : user.role === 'Content Creator' ? 'badge-creator' : 'badge-user'}">
+                            ${user.role || 'User'}
+                        </span>
+                    </div>
+                    <div>
+                        ${canModify ? `
+                            <select onchange="changeRole(${i}, this.value)" style="background:#0f1117;color:white;border:1px solid #475569;padding:6px 10px;border-radius:8px;">
+                                <option value="User" ${user.role === 'User' ? 'selected' : ''}>User</option>
+                                <option value="Content Creator" ${user.role === 'Content Creator' ? 'selected' : ''}>Content Creator</option>
+                            </select>
+                            <button onclick="toggleBan(${i})" class="action-btn btn-del">${user.banned ? 'Entbannen' : 'Bannen'}</button>
+                        ` : ''}
+                    </div>
                 `;
                 list.appendChild(item);
             });
+        }
+
+        // Rolle ändern
+        function changeRole(i, newRole) {
+            users[i].role = newRole;
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUserList();
         }
 
         function toggleBan(i) {
@@ -223,6 +273,13 @@
                 localStorage.setItem('users', JSON.stringify(users));
                 renderUserList();
             }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-panel button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTable();
         }
 
         function addCreator(e) {
@@ -259,20 +316,28 @@
 
         function renderTable() {
             const tbody = document.getElementById('creatorTableBody');
-            tbody.innerHTML = creators.map((c, i) => `
-                <tr>
+            tbody.innerHTML = '';
+
+            let list = [...creators];
+            list.sort((a, b) => parseInt(a.tier) - parseInt(b.tier));
+
+            list.forEach((c, idx) => {
+                const realIdx = creators.indexOf(c);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
                     <td><strong>${c.name}</strong></td>
-                    <td><span style="background:rgba(234,179,8,0.2);color:#fbbf24;padding:4px 10px;border-radius:9999px;">Stufe ${c.tier}</span></td>
+                    <td><span style="background:rgba(234,179,8,0.2);color:#fbbf24;padding:4px 12px;border-radius:9999px;">Stufe ${c.tier}</span></td>
                     <td>${c.tiktok}</td>
                     <td>${c.roblox}</td>
-                    <td><a href="${c.link}" target="_blank" style="color:var(--accent)">Link</a></td>
+                    <td><a href="${c.link}" target="_blank" style="color:var(--accent)">Link öffnen</a></td>
                     <td class="admin-only">
-                        <button onclick="changeRank(${i}, 'up')" class="action-btn btn-up">▲ Hoch</button>
-                        <button onclick="changeRank(${i}, 'down')" class="action-btn btn-down">▼ Runter</button>
-                        <button onclick="deleteCreator(${i})" class="action-btn btn-del">Löschen</button>
+                        <button onclick="changeRank(${realIdx}, 'up')" class="action-btn btn-up">▲ Hoch</button>
+                        <button onclick="changeRank(${realIdx}, 'down')" class="action-btn btn-down">▼ Runter</button>
+                        <button onclick="deleteCreator(${realIdx})" class="action-btn btn-del">Löschen</button>
                     </td>
-                </tr>
-            `).join('');
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         checkScreenState();
