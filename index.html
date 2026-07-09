@@ -25,33 +25,29 @@
 
         .container { max-width: 1280px; margin: 0 auto; display: none; }
 
-        .panel {
+        .auth-card, .panel {
             background: var(--panel);
             border-radius: 16px;
-            padding: 24px;
+            padding: 30px 20px;
             border: 1px solid #334155;
-            margin-bottom: 24px;
         }
 
-        h2 { color: var(--accent); margin-bottom: 20px; }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
+        h1 {
+            font-size: 2.4rem;
+            text-align: center;
+            background: linear-gradient(to right, #60a5fa, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        @media (min-width: 768px) {
-            .form-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-        }
-
-        input, select {
+        .auth-card input {
+            width: 100%;
+            padding: 14px;
             background: #0f1117;
             border: 1px solid #475569;
             color: white;
-            padding: 14px;
             border-radius: 12px;
-            width: 100%;
+            margin: 8px 0;
         }
 
         .btn-action {
@@ -63,6 +59,7 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
+            margin-top: 15px;
         }
 
         .user-item {
@@ -110,14 +107,20 @@
 </head>
 <body>
 
-    <!-- Login -->
-    <div class="panel" id="authCard" style="max-width:420px;margin:0 auto;">
-        <h1 style="text-align:center;">Creator Hub</h1>
+    <!-- Login / Register -->
+    <div class="auth-card" id="authCard">
+        <h1>Creator Hub</h1>
+        <p style="text-align:center; color:var(--text2); margin:20px 0;" id="authDesc">Logge dich ein</p>
+        
         <form id="authForm" onsubmit="handleAuth(event)">
-            <input type="email" id="authEmail" placeholder="E-Mail" required>
-            <input type="password" id="authPassword" placeholder="Passwort" required style="margin-top:12px;">
-            <button type="submit" class="btn-action" style="margin-top:20px;">Einloggen</button>
+            <input type="email" id="authEmail" placeholder="E-Mail Adresse" required>
+            <input type="password" id="authPassword" placeholder="Passwort" required>
+            <button type="submit" class="btn-action" id="authBtn">Einloggen</button>
         </form>
+
+        <p style="text-align:center; margin-top:20px;">
+            <span onclick="switchAuthMode()" id="toggleText" style="color:var(--accent); cursor:pointer;">Noch kein Account? Registrieren</span>
+        </p>
     </div>
 
     <!-- Dashboard -->
@@ -169,7 +172,7 @@
         let creators = JSON.parse(localStorage.getItem('creators')) || [];
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let loggedInUser = JSON.parse(sessionStorage.getItem('user')) || null;
-        let currentFilter = 'sort';
+        let isRegisterMode = false;
 
         const ADMINS = [
             "jonasterpitz@gmail.com",
@@ -181,30 +184,40 @@
             return ADMINS.includes((email || "").toLowerCase().trim());
         }
 
+        function switchAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('authBtn').innerText = isRegisterMode ? "Registrieren" : "Einloggen";
+            document.getElementById('toggleText').innerText = isRegisterMode ? "Bereits registriert? Einloggen" : "Noch kein Account? Registrieren";
+        }
+
         function handleAuth(e) {
             e.preventDefault();
             const email = document.getElementById('authEmail').value.trim().toLowerCase();
             const pw = document.getElementById('authPassword').value;
 
-            let user = users.find(u => u.email === email);
-            if (!user) {
-                user = { 
+            if (isRegisterMode) {
+                if (users.some(u => u.email === email)) return alert("Diese E-Mail ist bereits registriert!");
+                const newUser = { 
                     email, 
                     password: pw, 
                     isAdmin: isAdmin(email), 
                     role: isAdmin(email) ? "Admin" : "User",
                     banned: false 
                 };
-                users.push(user);
+                users.push(newUser);
                 localStorage.setItem('users', JSON.stringify(users));
-            }
-
-            if (user.password === pw && !user.banned) {
-                loggedInUser = user;
-                sessionStorage.setItem('user', JSON.stringify(user));
-                checkScreenState();
+                alert("Registrierung erfolgreich!");
+                isRegisterMode = false;
+                switchAuthMode();
             } else {
-                alert("Falsches Passwort oder Account gesperrt!");
+                const user = users.find(u => u.email === email && u.password === pw && !u.banned);
+                if (user) {
+                    loggedInUser = user;
+                    sessionStorage.setItem('user', JSON.stringify(user));
+                    checkScreenState();
+                } else {
+                    alert("Falsche E-Mail oder Passwort!");
+                }
             }
         }
 
@@ -260,7 +273,6 @@
             });
         }
 
-        // Rolle ändern
         function changeRole(i, newRole) {
             users[i].role = newRole;
             localStorage.setItem('users', JSON.stringify(users));
