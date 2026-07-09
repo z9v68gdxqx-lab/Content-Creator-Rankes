@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Dashboard - Admin User-Verwaltung</title>
+    <title>Creator Dashboard</title>
     <style>
         :root {
             --bg: #0a0c10;
@@ -20,34 +20,55 @@
             color: var(--text);
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
-            padding: 20px 10px;
+            padding: 15px 10px;
         }
 
         .container { max-width: 1280px; margin: 0 auto; display: none; }
 
         .auth-card, .panel {
-            background: var(--panel);
-            border-radius: 16px;
-            padding: 30px 20px;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 25px 18px;
             border: 1px solid #334155;
         }
 
         h1 {
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             text-align: center;
             background: linear-gradient(to right, #60a5fa, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .auth-card input {
-            width: 100%;
-            padding: 14px;
+        .user-bar {
+            background: var(--panel);
+            padding: 14px 18px;
+            border-radius: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .form-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+        }
+
+        input, select {
             background: #0f1117;
             border: 1px solid #475569;
             color: white;
+            padding: 14px;
             border-radius: 12px;
-            margin: 8px 0;
+            width: 100%;
         }
 
         .btn-action {
@@ -59,24 +80,25 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 15px;
         }
 
         .user-item {
             background: #0f1117;
-            padding: 14px 18px;
+            padding: 14px;
             border-radius: 12px;
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
             border: 1px solid #334155;
-            flex-wrap: wrap;
-            gap: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .user-item { flex-direction: row; align-items: center; justify-content: space-between; }
         }
 
         .badge {
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 9999px;
             font-size: 0.8rem;
             font-weight: 600;
@@ -85,15 +107,14 @@
         .badge-admin { background: #eab30833; color: #fbbf24; }
         .badge-creator { background: #22c55e33; color: #4ade80; }
         .badge-user { background: #64748b33; color: #94a3b8; }
-        .badge-banned { background: #ef444433; color: #f87171; }
 
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid #334155; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #334155; }
         th { background: #1e2937; }
 
         .action-btn {
-            padding: 6px 12px;
-            margin: 3px;
+            padding: 6px 10px;
+            margin: 2px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -103,33 +124,48 @@
         .btn-up { background: #22c55e; color: white; }
         .btn-down { background: #a855f7; color: white; }
         .btn-del { background: #ef4444; color: white; }
+
+        .filter-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            border-radius: 9999px;
+            background: #1e2937;
+            border: 1px solid #475569;
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: black;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Login / Register -->
+    <!-- Login -->
     <div class="auth-card" id="authCard">
         <h1>Creator Hub</h1>
-        <p style="text-align:center; color:var(--text2); margin:20px 0;" id="authDesc">Logge dich ein</p>
-        
         <form id="authForm" onsubmit="handleAuth(event)">
-            <input type="email" id="authEmail" placeholder="E-Mail Adresse" required>
-            <input type="password" id="authPassword" placeholder="Passwort" required>
-            <button type="submit" class="btn-action" id="authBtn">Einloggen</button>
+            <input type="email" id="authEmail" placeholder="E-Mail" required>
+            <input type="password" id="authPassword" placeholder="Passwort" required style="margin-top:12px;">
+            <button type="submit" class="btn-action" style="margin-top:20px;">Einloggen</button>
         </form>
-
-        <p style="text-align:center; margin-top:20px;">
-            <span onclick="switchAuthMode()" id="toggleText" style="color:var(--accent); cursor:pointer;">Noch kein Account? Registrieren</span>
-        </p>
     </div>
 
     <!-- Dashboard -->
     <div class="container" id="mainDashboard">
-        <div class="panel" style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="user-bar">
             <div><strong id="currentUserText"></strong> <span id="adminBadge" style="background:#eab30833;color:#fbbf24;padding:4px 12px;border-radius:9999px;font-size:0.85rem;display:none;">ADMIN</span></div>
             <button onclick="logout()" style="background:#ef4444;color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;">Abmelden</button>
         </div>
 
+        <!-- Nur Admins sehen diesen Bereich -->
         <div class="panel admin-only">
             <h2>Neuen Creator hinzufügen</h2>
             <form id="creatorForm" onsubmit="addCreator(event)" class="form-grid">
@@ -149,6 +185,11 @@
         <div class="panel admin-only">
             <h2>Registrierte Accounts</h2>
             <ul id="registeredUserList" style="list-style:none;padding:0;"></ul>
+        </div>
+
+        <div class="filter-panel">
+            <button class="filter-btn active" onclick="setFilter('all')">Alle anzeigen</button>
+            <button class="filter-btn" onclick="setFilter('sort')">Nach Stufe sortiert (1→2→3)</button>
         </div>
 
         <div class="panel">
@@ -172,7 +213,7 @@
         let creators = JSON.parse(localStorage.getItem('creators')) || [];
         let users = JSON.parse(localStorage.getItem('users')) || [];
         let loggedInUser = JSON.parse(sessionStorage.getItem('user')) || null;
-        let isRegisterMode = false;
+        let currentFilter = 'sort';
 
         const ADMINS = [
             "jonasterpitz@gmail.com",
@@ -184,40 +225,24 @@
             return ADMINS.includes((email || "").toLowerCase().trim());
         }
 
-        function switchAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authBtn').innerText = isRegisterMode ? "Registrieren" : "Einloggen";
-            document.getElementById('toggleText').innerText = isRegisterMode ? "Bereits registriert? Einloggen" : "Noch kein Account? Registrieren";
-        }
-
         function handleAuth(e) {
             e.preventDefault();
             const email = document.getElementById('authEmail').value.trim().toLowerCase();
             const pw = document.getElementById('authPassword').value;
 
-            if (isRegisterMode) {
-                if (users.some(u => u.email === email)) return alert("Diese E-Mail ist bereits registriert!");
-                const newUser = { 
-                    email, 
-                    password: pw, 
-                    isAdmin: isAdmin(email), 
-                    role: isAdmin(email) ? "Admin" : "User",
-                    banned: false 
-                };
-                users.push(newUser);
+            let user = users.find(u => u.email === email);
+            if (!user) {
+                user = {email, password: pw, isAdmin: isAdmin(email), role: isAdmin(email) ? "Admin" : "User", banned: false};
+                users.push(user);
                 localStorage.setItem('users', JSON.stringify(users));
-                alert("Registrierung erfolgreich!");
-                isRegisterMode = false;
-                switchAuthMode();
+            }
+
+            if (user.password === pw && !user.banned) {
+                loggedInUser = user;
+                sessionStorage.setItem('user', JSON.stringify(user));
+                checkScreenState();
             } else {
-                const user = users.find(u => u.email === email && u.password === pw && !u.banned);
-                if (user) {
-                    loggedInUser = user;
-                    sessionStorage.setItem('user', JSON.stringify(user));
-                    checkScreenState();
-                } else {
-                    alert("Falsche E-Mail oder Passwort!");
-                }
+                alert("Falsches Passwort oder Account gesperrt!");
             }
         }
 
