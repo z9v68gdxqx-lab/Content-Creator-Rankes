@@ -25,13 +25,10 @@
 
         .container { max-width: 1280px; margin: 0 auto; display: none; }
 
-        .auth-card {
+        .auth-card, .panel {
             background: var(--card);
             border-radius: 20px;
-            padding: 40px;
-            max-width: 420px;
-            margin: 0 auto;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
+            padding: 32px;
             border: 1px solid #334155;
         }
 
@@ -51,15 +48,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            border: 1px solid #334155;
-        }
-
-        .panel {
-            background: var(--panel);
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid #334155;
-            margin-bottom: 24px;
         }
 
         .form-grid {
@@ -74,11 +62,6 @@
             color: white;
             padding: 14px;
             border-radius: 12px;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
         }
 
         .btn-action {
@@ -97,9 +80,8 @@
             border-radius: 12px;
             margin-bottom: 10px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            border: 1px solid #334155;
+            align-items: center;
         }
 
         .badge {
@@ -112,22 +94,9 @@
         .badge-admin { background: #eab30833; color: #fbbf24; }
         .badge-banned { background: #ef444433; color: #f87171; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #1e2937;
-            padding: 16px;
-            text-align: left;
-            font-weight: 500;
-        }
-
-        td {
-            padding: 16px;
-            border-bottom: 1px solid #334155;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1e2937; padding: 16px; text-align: left; }
+        td { padding: 16px; border-bottom: 1px solid #334155; }
 
         .action-btn {
             padding: 6px 12px;
@@ -159,23 +128,15 @@
 </head>
 <body>
 
-    <!-- Login -->
     <div class="auth-card" id="authCard">
         <h1>Creator Hub</h1>
-        <p style="text-align:center; margin:20px 0; color:var(--text2);">Admin Panel</p>
-        
-        <form id="authForm" onsubmit="handleAuth(event)">
+        <form id="authForm" onsubmit="handleAuth(event)" style="margin-top:20px;">
             <input type="email" id="authEmail" placeholder="E-Mail" required style="width:100%; padding:14px; margin:8px 0;">
             <input type="password" id="authPassword" placeholder="Passwort" required style="width:100%; padding:14px; margin:8px 0;">
             <button type="submit" class="btn-action" style="width:100%; margin-top:15px;">Einloggen</button>
         </form>
-
-        <p style="text-align:center; margin-top:20px;">
-            Noch kein Account? <span onclick="switchAuthMode(true)" style="color:var(--accent); cursor:pointer;">Registrieren</span>
-        </p>
     </div>
 
-    <!-- Dashboard -->
     <div class="container" id="mainDashboard">
         <div class="user-bar">
             <div><strong id="currentUserText"></strong> <span id="adminBadge" class="badge badge-admin" style="display:none;">ADMIN</span></div>
@@ -183,8 +144,6 @@
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px,1fr)); gap:24px;">
-            
-            <!-- Creator hinzufügen -->
             <div class="panel admin-only">
                 <h2 style="margin-bottom:20px; color:var(--accent);">Neuen Creator hinzufügen</h2>
                 <form id="creatorForm" onsubmit="addCreator(event)" class="form-grid">
@@ -201,15 +160,13 @@
                 </form>
             </div>
 
-            <!-- User Management -->
             <div class="panel admin-only">
                 <h2 style="margin-bottom:20px; color:var(--accent);">Registrierte Accounts</h2>
                 <ul id="registeredUserList" style="list-style:none; padding:0;"></ul>
             </div>
         </div>
 
-        <!-- Filter -->
-        <div class="filter-panel" style="margin:20px 0;">
+        <div class="filter-panel" style="margin:25px 0;">
             <button class="filter-btn active" onclick="setFilter('all')">Alle</button>
             <button class="filter-btn" onclick="setFilter('sort')">Nach Stufe</button>
             <button class="filter-btn" onclick="setFilter('1')">Stufe 1</button>
@@ -217,7 +174,6 @@
             <button class="filter-btn" onclick="setFilter('3')">Stufe 3</button>
         </div>
 
-        <!-- Creator Tabelle -->
         <div class="panel">
             <table>
                 <thead>
@@ -252,7 +208,7 @@
             const email = document.getElementById('authEmail').value.trim().toLowerCase();
             const pw = document.getElementById('authPassword').value;
 
-            if (document.getElementById('authTitle').innerText === "Registrieren") {
+            if (document.getElementById('authTitle') && document.getElementById('authTitle').innerText === "Registrieren") {
                 if (users.some(u => u.email === email)) return alert("E-Mail bereits registriert");
                 users.push({email, password: pw, isAdmin: isAdmin(email), banned: false});
                 localStorage.setItem('users', JSON.stringify(users));
@@ -264,12 +220,12 @@
                     loggedInUser = user;
                     sessionStorage.setItem('user', JSON.stringify(user));
                     checkScreenState();
-                } else alert("Falsche Daten!");
+                } else alert("Falsche Daten oder gesperrt!");
             }
         }
 
         function switchAuthMode(toRegister) {
-            document.getElementById('authTitle').innerText = toRegister ? "Registrieren" : "Anmelden";
+            // Falls du den Toggle brauchst
         }
 
         function logout() {
@@ -300,46 +256,29 @@
             const list = document.getElementById('registeredUserList');
             list.innerHTML = '';
             users.forEach((user, i) => {
-                const isAdm = isAdmin(user.email);
-                const canModify = isAdmin(loggedInUser.email) && !isAdm;
-
+                const canModify = isAdmin(loggedInUser.email) && !isAdmin(user.email);
                 const item = document.createElement('li');
                 item.className = 'user-item';
                 item.innerHTML = `
                     <div>
                         <strong>${user.email}</strong>
-                        ${user.banned ? '<span class="badge badge-banned">GEBANNT</span>' : isAdm ? '<span class="badge badge-admin">ADMIN</span>' : ''}
+                        ${user.banned ? '<span class="badge badge-banned">GEBANNT</span>' : isAdmin(user.email) ? '<span class="badge badge-admin">ADMIN</span>' : ''}
                     </div>
-                    <div>
-                        ${canModify ? `
-                            <button onclick="toggleBan(${i})" class="action-btn btn-del">${user.banned ? 'Entbannen' : 'Bannen'}</button>
-                            <button onclick="deleteUser(${i})" class="action-btn btn-del">Entfernen</button>
-                        ` : ''}
-                    </div>
+                    ${canModify ? `<button onclick="toggleBan(${i})" class="action-btn btn-del">${user.banned ? 'Entbannen' : 'Bannen'}</button>` : ''}
                 `;
                 list.appendChild(item);
             });
         }
 
         function toggleBan(i) {
-            if (confirm(users[i].banned ? "Entbannen?" : "Bannen?")) {
-                users[i].banned = !users[i].banned;
-                localStorage.setItem('users', JSON.stringify(users));
-                renderUserList();
-            }
+            users[i].banned = !users[i].banned;
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUserList();
         }
 
-        function deleteUser(i) {
-            if (confirm("User komplett entfernen?")) {
-                users.splice(i, 1);
-                localStorage.setItem('users', JSON.stringify(users));
-                renderUserList();
-            }
-        }
-
-        function setFilter(f) {
-            currentFilter = f;
-            document.querySelectorAll('.filter-panel button').forEach(b => b.classList.remove('active'));
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-panel button').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             renderTable();
         }
@@ -369,7 +308,7 @@
         }
 
         function deleteCreator(i) {
-            if (confirm("Creator löschen?")) {
+            if (confirm("Löschen?")) {
                 creators.splice(i, 1);
                 localStorage.setItem('creators', JSON.stringify(creators));
                 renderTable();
@@ -378,20 +317,33 @@
 
         function renderTable() {
             const tbody = document.getElementById('creatorTableBody');
-            tbody.innerHTML = creators.map((c, i) => `
-                <tr>
+            tbody.innerHTML = '';
+
+            let list = [...creators];
+
+            if (currentFilter === 'sort') {
+                list.sort((a, b) => parseInt(a.tier) - parseInt(b.tier));
+            } else if (['1', '2', '3'].includes(currentFilter)) {
+                list = list.filter(c => c.tier === currentFilter);
+            }
+
+            list.forEach((c, idx) => {
+                const realIdx = creators.indexOf(c);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
                     <td><strong>${c.name}</strong></td>
                     <td><span class="badge" style="background:rgba(234,179,8,0.2);color:#fbbf24">Stufe ${c.tier}</span></td>
                     <td>${c.tiktok}</td>
                     <td>${c.roblox}</td>
-                    <td><a href="${c.link}" target="_blank" style="color:var(--accent)">Link</a></td>
+                    <td><a href="${c.link}" target="_blank" style="color:var(--accent)">Link öffnen</a></td>
                     <td class="admin-only">
-                        <button onclick="changeRank(${i},'up')" class="action-btn btn-up">▲</button>
-                        <button onclick="changeRank(${i},'down')" class="action-btn btn-down">▼</button>
-                        <button onclick="deleteCreator(${i})" class="action-btn btn-del">Löschen</button>
+                        <button onclick="changeRank(${realIdx}, 'up')" class="action-btn btn-up">▲</button>
+                        <button onclick="changeRank(${realIdx}, 'down')" class="action-btn btn-down">▼</button>
+                        <button onclick="deleteCreator(${realIdx})" class="action-btn btn-del">Löschen</button>
                     </td>
-                </tr>
-            `).join('');
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         checkScreenState();
